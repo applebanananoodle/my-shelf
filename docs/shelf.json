@@ -6,6 +6,24 @@
  "updated": "2026-11-22",
  "books": [
   {
+   "id": 7,
+   "title": "2026 노벨문학상 수상작가 앤 카슨 대표작 4종",
+   "author": "앤 카슨",
+   "publisher": "난다+한겨레출판",
+   "cover": "https://image.yes24.com/goods/197833802/L",
+   "link": "https://www.yes24.com/product/goods/197833802",
+   "media": "종이책",
+   "year": 2026,
+   "month": 11,
+   "category": "문학",
+   "fav": false,
+   "review": "",
+   "quote": "",
+   "reread": false,
+   "recommendTo": "",
+   "place": ""
+  },
+  {
    "id": 2,
    "title": "코스모스",
    "author": "칼 세이건",
@@ -18,7 +36,10 @@
    "category": "과학",
    "fav": false,
    "review": "",
-   "quote": ""
+   "quote": "",
+   "reread": null,
+   "recommendTo": null,
+   "place": null
   },
   {
    "id": 3,
@@ -33,7 +54,10 @@
    "category": "문학",
    "fav": true,
    "review": "",
-   "quote": ""
+   "quote": "",
+   "reread": null,
+   "recommendTo": null,
+   "place": null
   },
   {
    "id": 4,
@@ -48,7 +72,10 @@
    "category": "에세이",
    "fav": false,
    "review": "샘플 한줄평이에요. 책을 누르면 이렇게 상세가 열려요.",
-   "quote": ""
+   "quote": "",
+   "reread": null,
+   "recommendTo": null,
+   "place": null
   },
   {
    "id": 5,
@@ -63,7 +90,10 @@
    "category": "문학",
    "fav": false,
    "review": "",
-   "quote": ""
+   "quote": "",
+   "reread": null,
+   "recommendTo": null,
+   "place": null
   },
   {
    "id": 6,
@@ -78,7 +108,10 @@
    "category": "에세이",
    "fav": false,
    "review": "",
-   "quote": ""
+   "quote": "",
+   "reread": null,
+   "recommendTo": null,
+   "place": null
   }
  ]
 }
