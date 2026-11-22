@@ -153,7 +153,7 @@ async function load() {
   const books = [...STATE.books].sort((a, b) => (b.year - a.year) || ((b.month || 0) - (a.month || 0)) || (b.id - a.id));
   $('#list').innerHTML = books.map(b => `<div class="item">
       ${b.cover ? `<img src="${esc(b.cover)}" alt="">` : '<div class="ph"></div>'}
-      <div><b>${esc(b.title)}</b>${b.sample ? '<span class="sample">샘플</span>' : ''}${b.fav ? ' <span style="color:var(--accent)">♥</span>' : ''}
+      <div><b>${esc(b.title)}</b>${b.sample ? '<span class="sample">샘플</span>' : ''}${b.fav ? ' <span style="color:var(--accent)">♥</span>' : ''}${b.reread ? ' <span style="color:var(--accent)" title="다시 읽고 싶은 책">↻</span>' : ''}
         <div class="muted">${esc([b.author, `${b.year}${b.month ? '.' + b.month : ''}`, b.category].filter(Boolean).join(' · '))}</div></div>
       <div class="row"><button class="btn small" data-edit="${b.id}">고치기</button><button class="btn small" data-del="${b.id}">빼기</button></div>
     </div>`).join('') || '<p class="muted">아직 꽂힌 책이 없어요.</p>';
@@ -191,7 +191,14 @@ function showForm(book, id = null) {
         <div><label>읽은 달</label><input type="number" id="f_month" min="0" max="12" value="${esc(b.month || '')}" placeholder="모름"></div>
         <div><label>분류</label><select id="f_category">${STATE.categories.map(c => `<option ${c === b.category ? 'selected' : ''}>${c}</option>`).join('')}</select></div>
       </div>
-      <label><input type="checkbox" id="f_fav" ${b.fav ? 'checked' : ''}> ♥ 추천하는 책</label>
+      <div class="row" style="gap:18px">
+        <label><input type="checkbox" id="f_fav" ${b.fav ? 'checked' : ''}> ♥ 추천하는 책</label>
+        <label><input type="checkbox" id="f_reread" ${b.reread ? 'checked' : ''}> ↻ 다시 읽고 싶은 책</label>
+      </div>
+      <div class="grid2" style="grid-template-columns:1fr 1fr">
+        <div><label>누구에게 추천하고 싶나요 (선택)</label><input type="text" id="f_recommendTo" value="${esc(b.recommendTo || '')}" placeholder="예: 진로를 고민하는 친구"></div>
+        <div><label>읽은 장소 (선택)</label><input type="text" id="f_place" value="${esc(b.place || '')}" placeholder="예: 출근길 지하철"></div>
+      </div>
       <label>한줄평</label><textarea id="f_review" placeholder="이 책을 한 문장으로">${esc(b.review || '')}</textarea>
       <label>좋아하는 구절 (선택)</label><textarea id="f_quote" placeholder="짧게. 책 문장을 길게 옮기면 저작권 문제가 생길 수 있어요">${esc(b.quote || '')}</textarea>
       <div class="row" style="margin-top:12px">
@@ -206,7 +213,8 @@ function showForm(book, id = null) {
 async function saveBook(base) {
   const v = id => $('#' + id)?.value;
   const body = { ...base, year: v('f_year'), month: v('f_month'), category: v('f_category'),
-    fav: $('#f_fav').checked, review: v('f_review'), quote: v('f_quote') };
+    fav: $('#f_fav').checked, reread: $('#f_reread').checked, recommendTo: v('f_recommendTo'), place: v('f_place'),
+    review: v('f_review'), quote: v('f_quote') };
   if ($('#f_title')) Object.assign(body, { title: v('f_title'), author: v('f_author'), publisher: v('f_publisher') });
   try {
     if (editing) await api('/api/books/' + editing, { method: 'PUT', body });

@@ -6,64 +6,147 @@
 <title>나의 책장</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;600&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
 <!--
   나의 책장 · 사이트 쪽
   이 폴더(docs/)가 GitHub Pages 로 웹에 올라간다. 화면은 이 파일 하나이고, 데이터는 같은 폴더의 shelf.json 하나만 읽는다.
   shelf.json 은 어드민의 [게시] 버튼이 만든다. 여기서 직접 고치지 말고 어드민에서 고친 뒤 게시한다.
   디자인은 마음대로 바꿔도 된다. shelf.json 을 읽는 부분만 남아 있으면 어드민과 게시는 그대로 돌아간다.
-  색, 글꼴, 칸 크기만 살짝 바꿀 때는 아래 :root 의 값을 고치면 화면 전체에 반영된다.
+
+  디자인: 따뜻한 종이 × 나무 선반 (A안)
+  연도마다 나무 책장 한 칸. 표지가 선반 판자 위에 아래를 맞춰 서 있다.
+  색, 글꼴, 표지 크기만 살짝 바꿀 때는 아래 :root 의 값을 고치면 화면 전체에 반영된다.
 -->
 <style>
   :root {
-    --bg: #fbfaf6; --ink: #1d1d1b; --muted: #8a877d; --line: #e6e2d6; --accent: #b0412e; --card: #fff;
-    --cover-w: 150px;   /* 표지 칸의 최소 너비. 키우면 한 줄에 들어가는 책이 줄어든다 */
+    /* 종이와 글씨 */
+    --paper: #f3ead8; --ink: #3a2a1d; --muted: #8b735c; --line: #dccbae; --accent: #a8432a; --card: #fbf6ea;
+    /* 책장 나무 */
+    --back: #e6d6b8;          /* 책장 안쪽 벽 */
+    --wood-top: #b98552;      /* 선반 판자 윗면 */
+    --wood: #8a5a34;          /* 선반 판자 앞면 */
+    --wood-dark: #5c3a20;     /* 판자 아랫부분, 옆판 */
+    --plate: #c9a86b;         /* 연도 이름표 */
+    /* 크기 */
+    --cover-w: 128px;                              /* 표지 너비 */
+    --cover-h: calc(var(--cover-w) * 1.5);         /* 표지가 설 수 있는 최대 높이 */
+    --board: 16px;                                 /* 선반 판자 두께 */
+    --headroom: 26px;                              /* 책 위 여유 공간 */
+    --row: calc(var(--cover-h) + var(--headroom) + var(--board));
+    --side: 14px;                                  /* 책장 옆판 두께 */
+    --serif: "Noto Serif KR", "Nanum Myeongjo", "AppleMyungjo", "Batang", serif;
+    --sans: "Gothic A1", -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   }
   @media (prefers-color-scheme: dark) {
-    :root { --bg: #181816; --ink: #eeebe2; --muted: #9a968b; --line: #34332e; --accent: #e07a5f; --card: #23221f; }
+    :root {
+      --paper: #1f1913; --ink: #efe3cf; --muted: #a8927a; --line: #3d3125; --accent: #e08a62; --card: #2a2219;
+      --back: #2b2219; --wood-top: #8a5d38; --wood: #634026; --wood-dark: #3f2816; --plate: #a88a52;
+    }
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Gothic A1", -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; }
-  header { padding: 40px 24px 8px; max-width: 1240px; margin: 0 auto; }
-  h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 800; letter-spacing: -0.02em; margin: 0; }
-  .owner { color: var(--muted); margin-top: 8px; font-size: 14px; }
-  main { max-width: 1240px; margin: 0 auto; padding: 8px 24px 64px; }
+  body {
+    margin: 0; color: var(--ink); font-family: var(--sans);
+    background-color: var(--paper);
+    /* 종이 결. 아주 옅은 잡티를 깔아 매끈한 화면 대신 종이처럼 보이게 */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .15 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  header { padding: 56px 24px 8px; max-width: 1180px; margin: 0 auto; text-align: center; }
+  h1 { font-family: var(--serif); font-size: clamp(30px, 5.5vw, 48px); font-weight: 700; letter-spacing: -0.01em; margin: 0; }
+  .owner { color: var(--muted); margin-top: 10px; font-size: 14px; }
+  .owner::before, .owner::after { content: "—"; margin: 0 10px; opacity: .5; }
+  main { max-width: 1180px; margin: 0 auto; padding: 8px 24px 64px; }
 
-  /* 연도별 묶음 */
-  .year { margin-top: 40px; }
-  .year h2 { font-size: 15px; font-weight: 600; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 10px; margin: 0 0 22px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--cover-w), 1fr)); gap: 34px 22px; align-items: end; }
+  /* 연도마다 책장 한 칸 */
+  .year { margin-top: 48px; }
+  .year h2 { margin: 0 0 14px; text-align: center; }
+  .plate {
+    display: inline-block; font-family: var(--serif); font-size: 15px; font-weight: 600; color: #3b2a14;
+    background: linear-gradient(180deg, #e0c48c, var(--plate)); padding: 5px 16px; border-radius: 3px;
+    box-shadow: inset 0 0 0 1px rgba(90,60,20,.35), 0 1px 2px rgba(0,0,0,.15); letter-spacing: .04em;
+  }
+  .plate small { font-weight: 400; opacity: .75; margin-left: 6px; font-size: 13px; }
 
-  /* 책 한 권. 표지는 아래쪽을 맞춰 선반에 꽂힌 것처럼 */
-  .book { background: none; border: 0; padding: 0; cursor: pointer; text-align: center; color: inherit; font: inherit; }
-  .book img { width: 100%; display: block; box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 8px 18px rgba(0,0,0,.10); transition: transform .15s; }
-  .book:hover img, .book:focus-visible img { transform: translateY(-4px); }
-  .marks { height: 22px; margin-top: 8px; font-size: 14px; color: var(--accent); }
-  /* 표지가 없는 책은 제목 카드로 */
-  .nocover { aspect-ratio: 2 / 3; display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 14px; background: var(--card); border: 1px solid var(--line); text-align: left; }
-  .nocover b { font-size: 15px; line-height: 1.35; }
-  .nocover span { font-size: 12px; color: var(--muted); }
+  /* 책장 틀. 줄 높이(--row)마다 아래쪽에 판자를 그린다. 책이 여러 줄이 되면 판자도 줄마다 생긴다 */
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fill, var(--cover-w));
+    grid-auto-rows: var(--row); column-gap: 26px; row-gap: 0; justify-content: start;
+    padding: 0 22px; border-left: var(--side) solid var(--wood-dark); border-right: var(--side) solid var(--wood-dark);
+    border-top: 10px solid var(--wood-dark); border-radius: 4px 4px 0 0;
+    background:
+      linear-gradient(to bottom, transparent calc(100% - var(--board)), var(--wood-top) calc(100% - var(--board)),
+        var(--wood-top) calc(100% - var(--board) + 3px), var(--wood) calc(100% - var(--board) + 3px), var(--wood-dark) 100%)
+        0 0 / 100% var(--row) repeat-y,
+      linear-gradient(to bottom, rgba(50,30,10,.20), transparent 22px) 0 0 / 100% var(--row) repeat-y,
+      var(--back);
+    background-origin: padding-box;   /* 위쪽 여백이 없어서 줄 시작과 판자 간격이 맞는다. 판자는 옆판까지 닿는다 */
+    background-clip: padding-box;
+    box-shadow: 0 14px 22px -12px rgba(50,30,10,.45);
+  }
+
+  /* 책 한 권. 판자 위에 아래를 맞춰 선다 */
+  .book {
+    display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
+    padding: 0 0 var(--board); background: none; border: 0; cursor: pointer; color: inherit; font: inherit;
+  }
+  .cover { position: relative; display: block; transition: transform .2s ease, filter .2s ease; transform-origin: bottom center; }
+  .book img { display: block; max-width: var(--cover-w); max-height: var(--cover-h); width: auto; height: auto;
+    box-shadow: 2px 0 0 rgba(255,255,255,.12) inset, -3px 2px 6px rgba(40,22,8,.30), 0 1px 1px rgba(0,0,0,.2); }
+  /* 왼쪽에 책등이 접히는 자국 */
+  .cover::before { content: ""; position: absolute; left: 6px; top: 0; bottom: 0; width: 2px; background: linear-gradient(90deg, rgba(0,0,0,.18), rgba(255,255,255,.12)); pointer-events: none; z-index: 1; }
+  .book:hover .cover, .book:focus-visible .cover { transform: translateY(-6px) scale(1.03); filter: drop-shadow(0 10px 10px rgba(40,22,8,.30)); }
+  .book:focus-visible { outline: none; }
+  .book:focus-visible .cover { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* 추천한 책에는 책갈피 리본 */
+  .ribbon { position: absolute; top: -4px; right: 12px; width: 13px; height: 34px; background: var(--accent); z-index: 2;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%); box-shadow: 0 1px 2px rgba(0,0,0,.3); }
+  /* 한줄평이나 구절이 있는 책은 오른쪽 위 모서리를 살짝 접는다 */
+  .note { position: absolute; top: 0; right: 0; width: 16px; height: 16px; z-index: 2;
+    background: linear-gradient(225deg, var(--back) 50%, var(--card) 50%); box-shadow: -1px 1px 2px rgba(0,0,0,.2); }
+  .ribbon + .note { display: none; }   /* 리본이 있으면 접힌 모서리는 생략 */
+
+  /* 표지가 없는 책은 천 장정 같은 제목 카드로 */
+  .nocover { display: flex; flex-direction: column; justify-content: center; gap: 10px; padding: 14px 12px 14px 18px; text-align: left;
+    background: linear-gradient(90deg, rgba(0,0,0,.10), transparent 10px), #7d4b32; color: #f4e6cc; }
+  .book .nocover { width: var(--cover-w); height: calc(var(--cover-h) * .92); box-shadow: -3px 2px 6px rgba(40,22,8,.30); }
+  .nocover b { font-family: var(--serif); font-size: 15px; line-height: 1.4; font-weight: 600; }
+  .nocover span { font-size: 12px; opacity: .8; }
 
   /* 책 상세 */
-  dialog { border: 0; border-radius: 10px; padding: 0; width: min(760px, calc(100% - 32px)); background: var(--card); color: var(--ink); }
-  dialog::backdrop { background: rgba(20,20,18,.45); }
-  .detail { display: grid; grid-template-columns: 220px 1fr; gap: 28px; padding: 28px; }
-  .detail img { width: 100%; box-shadow: 0 8px 20px rgba(0,0,0,.15); }
-  .detail h3 { font-size: 22px; margin: 0 0 6px; line-height: 1.3; }
-  .meta { color: var(--muted); font-size: 14px; line-height: 1.7; }
-  .review { margin-top: 18px; font-size: 15.5px; line-height: 1.7; }
-  .quote { margin-top: 14px; padding-left: 14px; border-left: 2px solid var(--accent); font-style: italic; line-height: 1.7; }
-  .detail a { color: var(--accent); font-size: 14px; display: inline-block; margin-top: 18px; }
+  dialog { border: 0; border-radius: 6px; padding: 0; width: min(760px, calc(100% - 32px)); background: var(--card); color: var(--ink);
+    box-shadow: 0 20px 50px rgba(30,18,6,.35); }
+  dialog::backdrop { background: rgba(40,26,12,.5); }
+  .detail { display: grid; grid-template-columns: 220px 1fr; gap: 30px; padding: 32px; }
+  .detail img { width: 100%; box-shadow: -3px 4px 14px rgba(40,22,8,.3); }
+  .detail .nocover { aspect-ratio: 2 / 3; }
+  .detail h3 { font-family: var(--serif); font-size: 24px; font-weight: 700; margin: 0 0 8px; line-height: 1.35; }
+  .meta { color: var(--muted); font-size: 14px; line-height: 1.75; }
+  .review { margin-top: 20px; font-family: var(--serif); font-size: 16px; line-height: 1.85; }
+  .quote { margin-top: 16px; padding: 12px 16px; border-left: 3px solid var(--accent); background: rgba(168,67,42,.06);
+    font-family: var(--serif); font-style: italic; line-height: 1.8; }
+  /* 다시 읽고 싶은 책 표시, 추천 대상과 읽은 장소 */
+  .tag { display: inline-block; margin: 14px 0 0; padding: 3px 10px; border: 1px solid var(--accent); border-radius: 99px;
+    color: var(--accent); font-size: 13px; }
+  .notes { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 18px 0 0; padding-top: 14px;
+    border-top: 1px dashed var(--line); font-size: 14px; line-height: 1.6; }
+  .notes dt { color: var(--muted); }
+  .notes dd { margin: 0; font-family: var(--serif); }
+  .detail a { color: var(--accent); font-size: 14px; display: inline-block; margin-top: 20px; }
   .close { position: absolute; top: 10px; right: 14px; border: 0; background: none; font-size: 26px; color: var(--muted); cursor: pointer; }
+
   @media (max-width: 600px) {
-    :root { --cover-w: 104px; }
-    .grid { gap: 26px 14px; }
-    .detail { grid-template-columns: 1fr; }
-    .detail img { width: 150px; }
+    :root { --cover-w: 88px; --headroom: 18px; --board: 12px; --side: 8px; }
+    main { padding: 8px 16px 48px; }
+    header { padding: 40px 16px 4px; }
+    .grid { column-gap: 12px; padding: 0 10px; }
+    .ribbon { width: 10px; height: 26px; right: 8px; }
+    .book .nocover b { font-size: 12.5px; }
+    .detail { grid-template-columns: 1fr; padding: 28px 22px; gap: 20px; }
+    .detail img, .detail .nocover { width: 150px; }
   }
-  footer { max-width: 1240px; margin: 0 auto; padding: 24px; color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--line); }
+  footer { max-width: 1180px; margin: 0 auto; padding: 24px; color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--line); text-align: center; }
   footer a { color: inherit; }
-  .empty { color: var(--muted); padding: 60px 0; }
+  .empty { color: var(--muted); padding: 60px 0; text-align: center; font-family: var(--serif); }
 </style>
 </head>
 <body>
@@ -99,13 +182,14 @@ function render(data) {
   BOOKS = data.books;
   if (!BOOKS.length) { $('#shelf').innerHTML = '<p class="empty">아직 꽂힌 책이 없어요.</p>'; return; }
 
-  // 읽은 해로 묶는다. shelf.json 이 이미 최근 순으로 정렬돼 있다
+  // 읽은 해로 묶는다. shelf.json 이 이미 최근 순으로 정렬돼 있다. 한 해가 책장 한 칸
   const years = [...new Set(BOOKS.map(b => b.year))];
   $('#shelf').innerHTML = years.map(y => {
     const list = BOOKS.filter(b => b.year === y);
-    return `<section class="year"><h2>${esc(y)} · ${list.length}권</h2><div class="grid">${
-      list.map(b => `<button class="book" data-id="${b.id}">${coverHtml(b, 'L')}
-        <div class="marks">${b.fav ? '♥' : ''}${b.review || b.quote ? ' 📝' : ''}</div></button>`).join('')
+    return `<section class="year"><h2><span class="plate">${esc(y)}<small>${list.length}권</small></span></h2><div class="grid">${
+      list.map(b => `<button class="book" data-id="${b.id}" title="${esc(b.title)}"><span class="cover">${coverHtml(b, 'L')}${
+        b.fav ? '<i class="ribbon" aria-label="추천"></i>' : ''}${
+        b.review || b.quote ? '<i class="note" aria-label="기록 있음"></i>' : ''}</span></button>`).join('')
     }</div></section>`;
   }).join('');
 }
@@ -119,8 +203,12 @@ function openBook(id) {
     <div>
       <h3>${esc(b.title)}</h3>
       <div class="meta">${esc([b.author, b.publisher].filter(Boolean).join(' · '))}<br>${esc([when + ' 읽음', b.media, b.category].filter(Boolean).join(' · '))}${b.fav ? ' · <span style="color:var(--accent)">♥ 추천</span>' : ''}</div>
+      ${b.reread ? '<p class="tag">↻ 다시 읽고 싶은 책</p>' : ''}
       ${b.review ? `<p class="review">${esc(b.review)}</p>` : ''}
       ${b.quote ? `<p class="quote">${esc(b.quote)}</p>` : ''}
+      ${b.recommendTo || b.place ? `<dl class="notes">${
+        b.recommendTo ? `<dt>이런 분께 권해요</dt><dd>${esc(b.recommendTo)}</dd>` : ''}${
+        b.place ? `<dt>읽은 곳</dt><dd>${esc(b.place)}</dd>` : ''}</dl>` : ''}
       ${b.link ? `<a href="${esc(b.link)}" target="_blank" rel="noopener">YES24에서 보기 ↗</a>` : ''}
     </div></div>`;
   $('#dlg').showModal();

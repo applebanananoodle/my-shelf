@@ -149,7 +149,13 @@ def search(q):
 # ───────────────────────────── ③ 기록 다루기 ─────────────────────────────
 # 기록 한 권에 들어가는 칸. 어드민 입력 화면과 사이트가 이 이름을 같이 쓴다.
 FIELDS = ["title", "author", "publisher", "cover", "link", "yes24Id", "isbn13", "media",
-          "year", "month", "category", "fav", "review", "quote"]
+          "year", "month", "category", "fav", "review", "quote",
+          "reread", "recommendTo", "place"]   # 다시 읽고 싶은 책, 추천하고 싶은 사람, 읽은 장소
+
+# 이 가운데 사이트(docs/shelf.json)로 내보내는 칸. 게시와 '게시하지 않은 변경' 확인이 같이 쓴다
+PUBLIC_FIELDS = ["id", "title", "author", "publisher", "cover", "link", "media",
+                 "year", "month", "category", "fav", "review", "quote",
+                 "reread", "recommendTo", "place"]
 
 
 def clean_book(data, old=None):
@@ -164,7 +170,8 @@ def clean_book(data, old=None):
     book["year"] = int(book.get("year") or today.year)
     book["month"] = int(book.get("month") or 0) or None
     book["fav"] = bool(book.get("fav"))
-    for k in ("review", "quote", "author", "publisher", "category"):
+    book["reread"] = bool(book.get("reread"))
+    for k in ("review", "quote", "author", "publisher", "category", "recommendTo", "place"):
         book[k] = (book.get(k) or "").strip()
     return book
 
@@ -175,8 +182,7 @@ def new_id(db):
 
 def publish(db):
     """ 사이트가 읽는 docs/shelf.json 을 새로 쓴다. 사이트에 필요한 칸만 내보낸다. """
-    keep = ["id", "title", "author", "publisher", "cover", "link", "media",
-            "year", "month", "category", "fav", "review", "quote"]
+    keep = PUBLIC_FIELDS
     books = sorted(db["books"], key=lambda b: (b.get("year") or 0, b.get("month") or 0, b.get("id")), reverse=True)
     out = {
         "shelf": db.get("shelf", {}),
@@ -197,8 +203,7 @@ def published_differs(db):
     except ValueError:
         return True
     ids = lambda books: sorted((b.get("id"), json.dumps(b, sort_keys=True, ensure_ascii=False)) for b in books)
-    keep = ["id", "title", "author", "publisher", "cover", "link", "media",
-            "year", "month", "category", "fav", "review", "quote"]
+    keep = PUBLIC_FIELDS
     mine = [{k: b.get(k) for k in keep} for b in db["books"]]
     return ids(mine) != ids(pub.get("books", [])) or pub.get("shelf") != db.get("shelf")
 
